@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+
+import sys, os, shutil
+
+task_path = os.path.join(".pyncho", "tasks")
+if os.path.isdir(task_path):
+    tasks = os.listdir(task_path)
+
+try:
+    editor = os.environ['EDITOR'] or "vim"
+except:
+    editor = "vim"
+
+def usage():
+    print "pyncho - blogging for intellectuals who hate ponchos and love Gravity's Rainbow"
+    print "USAGE: pyncho prepare|info|list|post|rewrite|generate|version"
+    if 'tasks' in dir(): # Less pythonic than catching NameError?
+        print "TASKS: pyncho " + "|".join(tasks)
+
+try:
+    command = sys.argv[1]
+except:
+    usage()
+    sys.exit(2)
+
+if command == "prepare":
+    try:
+        shutil.copytree(Pyncho.skeleton, ".pyncho")
+        print "oh yea! vim .pyncho/rc"
+        sys.exit(0)
+    except:
+        print "pyncho. pyncho? pyncho!"
+        sys.exit(1)
+
+if command == "version":
+    "v%s: %s" % Pyncho.version, Pyncho.tag
+    sys.exit(0)
+
+if 'tasks' in dir() and command in tasks:
+    pass
+    #TODO
+
+try:
+    blog = Poncho.Blog()
+    blog.do_file(".poncho/rc")
+
+    # Oh how I pine for a switch statement
+    if command == "info":
+        blog.execute_hook("before-info")
+        print blog.title; print
+
+        count = blog.posts.size
+        print "post count: %i" % count
+        
+        if count > 0:
+            latest = blog.posts_by_date.first.nice_date
+            print "last post: %s" % latest
+
+        blog.execute_hook("after-info")
+    elif command == "generate":
+        blog.execute_hook("before-generate")
+
+        if not blog.posts:
+            print "No posts found"
+            sys.exit(0)
+
+        try:
+            os.mkdir(blog.output_path)
+        except OSError: # Directory existed
+            pass
+
+        print "Generating root node..."
+        #TODO
+    elif command == "post":
+        blog.execute_hook("before-post")
+        date = datetime.now().strftime("%Y-%m-%d")
+        #TODO
+    elif command == "list":
+        pass
+        #TODO
+    elif command == "rewrite":
+        pass
+        #TODO
+    else: # No/invalid command
+        usage
+except:
+    print "have you done 'pyncho prepare' yet????"
+    sys.exit(1)
