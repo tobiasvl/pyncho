@@ -5,6 +5,8 @@ import sys, os, shutil
 task_path = os.path.join(".pyncho", "tasks")
 if os.path.isdir(task_path):
     tasks = os.listdir(task_path)
+else:
+    tasks = None
 
 try:
     editor = os.environ['EDITOR']
@@ -14,10 +16,8 @@ except KeyError:
 def usage():
     print "pyncho - blogging for intellectuals who hate ponchos and love Gravity's Rainbow"
     print "USAGE: pyncho prepare|info|list|post|rewrite|generate|version"
-    try:
+    if tasks:
         print "TASKS: pyncho " + "|".join(tasks)
-    except NameError:
-        pass # Pythonic handling of uninitialized variable?
 
 try:
     command = sys.argv[1]
@@ -39,10 +39,8 @@ if command == "version":
     sys.exit(0)
 
 try:
-    if command in tasks:
+    if tasks and command in tasks:
         pass #TODO
-except NameError:
-    pass
 
 try:
     blog = Poncho.Blog()
