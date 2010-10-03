@@ -7,15 +7,17 @@ if os.path.isdir(task_path):
     tasks = os.listdir(task_path)
 
 try:
-    editor = os.environ['EDITOR'] or "vim"
-except:
+    editor = os.environ['EDITOR']
+except KeyError:
     editor = "vim"
 
 def usage():
     print "pyncho - blogging for intellectuals who hate ponchos and love Gravity's Rainbow"
     print "USAGE: pyncho prepare|info|list|post|rewrite|generate|version"
-    if 'tasks' in dir(): # Less pythonic than catching NameError?
+    try:
         print "TASKS: pyncho " + "|".join(tasks)
+    except NameError:
+        pass # Pythonic handling of uninitialized variable?
 
 try:
     command = sys.argv[1]
@@ -36,9 +38,11 @@ if command == "version":
     "v%s: %s" % Pyncho.version, Pyncho.tag
     sys.exit(0)
 
-if 'tasks' in dir() and command in tasks:
+try:
+    if command in tasks:
+        pass #TODO
+except NameError:
     pass
-    #TODO
 
 try:
     blog = Poncho.Blog()
