@@ -108,7 +108,14 @@ try:
     elif command == "post":
         blog.execute_hook("before-post")
         date = datetime.now().strftime("%Y-%m-%d")
-        #TODO
+        if sys.argv.len() > 2:
+            title = " ".join(sys.argv[2:])
+        else:
+            title = "Untitled"
+        id = Poncho.poncho_id(title)
+        path = os.path.join(blog.nodepath, date + "." + id + ".txt")
+        os.system(editor + " " + path)
+        blog.execute_hook("after-post")
     elif command == "list":
         pass
         #TODO
