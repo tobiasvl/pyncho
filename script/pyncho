@@ -38,9 +38,9 @@ if command == "version":
     "v%s: %s" % Pyncho.version, Pyncho.tag
     sys.exit(0)
 
-try:
-    if tasks and command in tasks:
-        pass #TODO
+if tasks and command in tasks:
+    os.system(".pyncho/tasks/" + command)
+    sys.exit(0)
 
 try:
     blog = Poncho.Blog()
