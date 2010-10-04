@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>#{title}</title>
+    <description>#{description}</description>
+    <link>#{baseUrl}</link>
+    - recentPosts foreach(post,
+    <item>
+      <title>#{post title}</title>
+      <link>#{baseUrl}/#{post id}</link>
+      <guid isPermaLink="true">#{baseUrl}/#{post id}</guid>
+      <pubDate>#{post published asAtomDate}</lastPubDate>
+      <description>#{post asHtml escapeHtml}</description>
+    - )
+  </channel>
+</rss>
