@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import sys, os, shutil, re
+import sys, os, shutil, re, datetime
 sys.path.append("modules")
-from Pyncho import Pyncho
+from Pyncho import *
 
 task_path = os.path.join(".pyncho", "tasks")
 if os.path.isdir(task_path):
@@ -37,25 +37,26 @@ if command == "prepare":
         sys.exit(1)
 
 if command == "version":
-    "v%s: %s" % Pyncho.version, Pyncho.tag
+    "v%.1f: %s" % Pyncho.version, Pyncho.tag
     sys.exit(0)
 
 if tasks and command in tasks:
     os.system(".pyncho/tasks/" + command)
     sys.exit(0)
 
-try:
+def main():
+#try:
     blog = Pyncho.Blog()
-    blog.read_rc_file(".poncho/rc")
+    blog.read_rc_file(".pyncho/rc")
 
     # Oh how I pine for a switch statement
     if command == "info":
         blog.execute_hook("before-info")
         print blog.title; print
 
-        count = blog.posts.size
+        count = len(blog.posts())
         print "post count: %i" % count
-        
+
         if count > 0:
             latest = blog.posts_by_date.first.nice_date
             print "last post: %s" % latest
@@ -92,7 +93,7 @@ try:
         if blog.archive_style == "seasonal":
             archive_file.write(blog.generate_seasonal_archive)
             for season, posts in blog.archive.posts_by_season:
-                season_file = open(blog.output_path + "/" + season.as_poncho_id + ".html", 'w')
+                season_file = open(blog.output_path + "/" + pyncho_id(season) + ".html", 'w')
                 season_file.write(blog.generate_season(season, posts))
                 season_file.close()
         #elif blog.archive_style == "daily":
@@ -109,26 +110,37 @@ try:
 
     elif command == "post":
         blog.execute_hook("before-post")
-        date = datetime.now().strftime("%Y-%m-%d")
-        if sys.argv.len() > 2:
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        if len(sys.argv) > 2:
             title = " ".join(sys.argv[2:])
         else:
             title = "Untitled"
-        id = Poncho.poncho_id(title)
-        path = os.path.join(blog.nodepath, date + "." + id + ".txt")
+        id = pyncho_id(title)
+        path = os.path.join(blog.node_path, date + "." + id + ".txt")
+        if not os.path.exists(blog.node_path):
+            os.mkdir(blog.node_path)
         os.system(editor + " " + path)
         blog.execute_hook("after-post")
     elif command == "list":
         pattern = " ".join(sys.argv[2:])
-        for post in blog.posts:
+        for post in blog.posts():
             if pattern == "" or re.search(pattern, post.title):
-                print "%s, %s" % post.nice_date, post.title
+                print "%s, %s" % post.nice_date(), post.title
     elif command == "rewrite":
-        pass
-        #TODO
+        blog.execute_hook("before-rewrite")
+        if len(sys.argv) > 2:
+            pattern = " ".join(sys.argv[2:])
+            post = filter(lambda post: re.search(pattern, post), blog.posts)
+        else:
+            post = blog.posts[-1]
+        if post:
+            os.system(editor + " " + post.source.path)
+        else:
+            print "Could not find post"
     else: # No/invalid command
         usage
-except Exception, e:
-    print e
-    print "have you done 'pyncho prepare' yet????"
-    sys.exit(1)
+#except Exception, e:
+#    print e
+#    print "have you done 'pyncho prepare' yet????"
+#    sys.exit(1)
+main()

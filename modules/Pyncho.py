@@ -1,6 +1,9 @@
 # vim: set fileencoding=utf-8
 import os, sys, time
 
+def pyncho_id(string):
+    return string.replace(" ", "·").lower()
+
 class Pyncho:
     version = 1.0
     tag = "a screaming comes across the sky"
@@ -28,30 +31,30 @@ class Pyncho:
             self.__dict__.update(variables)
 
         # all posts, unsorted
-        def posts():
-            return
+        def posts(self):
+            return []
             #TODO
 
         # a list of posts, sorted by date
-        def posts_by_date():
-            return
+        def posts_by_date(self):
+            return []
             #TODO
 
-        def first_post():
+        def first_post(self):
             return posts_by_date()[0]
 
-        def archive():
-            return Poncho.Archive(posts)
+        def archive(self):
+            return Pyncho.Archive(posts)
 
-        def recent_posts(count = 5):
+        def recent_posts(self, count = 5):
             return posts_by_date()[0:count]
 
-        def generate_latest():
+        def generate_latest(self):
             return generate("index.html")
 
         def generate_node(node):
             title = node.title + " ·" + self.title
-            return generate ("node.html")
+            return generate("node.html")
         
         def generate_archive():
             title = "archives" + "· " + self.title
@@ -66,18 +69,18 @@ class Pyncho:
             return generate("feed.rss", True)
 
         def generate(source, skipLayout=False):
-            blueprint = Blueprint(".poncho/blueprints/" + source)
+            blueprint = Blueprint(".pyncho/blueprints/" + source)
             if skipLayout:
                 blueprint = blueprint.through(layout)
             return blueprint.render(call.sender)
 
-        layout = ".poncho/blueprints/layout.html"
+        layout = ".pyncho/blueprints/layout.html"
 
         # move diz
-        def execute_hook(hook):
-            hook = os.join(".poncho/hooks/" + hook)
-            if os.isfile(hook):
-                os.system(hook)
+        def execute_hook(self, hook):
+            hook_file = os.path.join(".pyncho/hooks/" + hook)
+            if os.path.isfile(hook_file):
+                os.system(hook_file)
             return
 
     class Post:
@@ -98,7 +101,7 @@ class Pyncho:
             return self.id
 
         def generate():
-            return Blueprint.new(".poncho/blueprints/post.html").render #TODO
+            return Blueprint.new(".pyncho/blueprints/post.html").render #TODO
 
         def read_body():
             return source.contents
@@ -120,13 +123,13 @@ class Pyncho:
             self.years = Map() #TODO and what about with
             return
 
-        def append_posts(posts):
+        def append_posts(self, posts):
 #            for post in posts:
 #TODO
             return
 
-        def posts_by_season():
+        def posts_by_season(self):
             return #TODO
 
-        def season_name(season):
+        def season_name(self, season):
             return ["winter", "spring", "summer", "autumn"][season]
