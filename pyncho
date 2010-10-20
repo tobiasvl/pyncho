@@ -30,24 +30,25 @@ except:
 if command == "prepare":
     try:
         shutil.copytree(Pyncho.skeleton, ".pyncho")
-        print "oh yea! vim .pyncho/rc"
+        os.system("%s %s" % (editor, os.path.join(".pyncho", "rc")))
         sys.exit(0)
-    except:
-        print "pyncho. pyncho? pyncho!"
-        sys.exit(1)
+    except Exception, e:
+        if not e == 0:
+            print "pyncho. pyncho? pyncho!"
+            sys.exit(1)
 
 if command == "version":
     print "v%.1f: %s" % (Pyncho.version, Pyncho.tag)
     sys.exit(0)
 
 if tasks and command in tasks:
-    os.system(".pyncho/tasks/" + command)
+    os.system("%s %s" % (os.path.join(".pyncho", "tasks"), command))
     sys.exit(0)
 
 def main():
 #try:
     blog = Pyncho.Blog()
-    blog.read_rc_file(".pyncho/rc")
+    blog.read_rc_file(os.path.join(".pyncho", "rc"))
 
     # Oh how I pine for a switch statement
     if command == "info":

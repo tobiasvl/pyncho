@@ -41,32 +41,32 @@ class Pyncho:
             return sorted(self.posts(), key=(lambda post: post.published))
 
         def first_post(self): #TODO Remove?
-            return posts_by_date()[0]
+            return self.posts_by_date()[0]
 
         def archive(self):
-            return Pyncho.Archive(posts)
+            return Pyncho.Archive(self.posts())
 
         def recent_posts(self, count = 5):
-            return posts_by_date()[0:count]
+            return self.posts_by_date()[0:count]
 
         def generate_latest(self):
-            return generate("index.html")
+            return self.generate("index.html")
 
-        def generate_node(node):
+        def generate_node(self, node):
             title = node.title + " ·" + self.title
-            return generate("node.html")
+            return self.generate("node.html")
         
-        def generate_archive():
+        def generate_archive(self):
             title = "archives" + "· " + self.title
-            return generate("archive.html")
+            return self.generate("archive.html")
 
-        def generate_seasonal_archive():
+        def generate_seasonal_archive(self):
             title = "seasonal archives" + " · " + self.title
-            years = posts_by_date()
-            return generate("seasonal-archive.html")
+            years = self.posts_by_date()
+            return self.generate("seasonal-archive.html")
 
-        def generate_feed():
-            return generate("feed.rss", True)
+        def generate_feed(self):
+            return self.generate("feed.rss", True)
 
         def generate(source, skipLayout=False):
             blueprint = Blueprint(".pyncho/blueprints/" + source)
