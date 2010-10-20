@@ -1,5 +1,5 @@
 # vim: set fileencoding=utf-8
-import os, sys, time
+import os, sys, time, datetime
 
 def pyncho_id(string):
     return string.replace(" ", "·").lower()
@@ -32,15 +32,15 @@ class Pyncho:
 
         # all posts, unsorted
         def posts(self):
-            return []
-            #TODO
+            return [Pyncho.Post(os.path.join(self.node_path, file))
+                for file in os.listdir(self.node_path)
+                if os.path.splitext(os.path.normcase(file))[1] == ".txt"]
 
         # a list of posts, sorted by date
         def posts_by_date(self):
-            return []
-            #TODO
+            return sorted(self.posts(), key=(lambda post: post.published))
 
-        def first_post(self):
+        def first_post(self): #TODO Remove?
             return posts_by_date()[0]
 
         def archive(self):
@@ -88,35 +88,35 @@ class Pyncho:
 
         def __init__(self, path):
             self.source = path
-            self.last_update = source.last_data_change_date
-            self.meta = source.base_name.split(".")
-            self.id = self.meta[0]
+            self.last_update = os.path.getmtime(path)
+            self.meta = os.path.basename(self.source).split(".")
+            self.id = self.meta[1]
             self.title = self.id.replace("·", " ")
-            self.published = time.strptime(self.meta[1], "%Y-%m-%d")
+            self.published = datetime.datetime.strptime(self.meta[0], "%Y-%m-%d")
 
-        def as_html():
-            return Marxup(read_body).as_html
+        def as_html(self):
+            return Marxup(read_body()).as_html
 
-        def id():
+        def id(self):
             return self.id
 
         def generate():
             return Blueprint.new(".pyncho/blueprints/post.html").render #TODO
 
-        def read_body():
-            return source.contents
+        def read_body(self):
+            return self.source.contents
 
-        def nice_date():
-            return published.strftime("%d. %B %Y")
+        def nice_date(self):
+            return self.published.strftime("%d. %B %Y")
 
-        def season():
-            return str(((int(published.strftime("%m")) - 1) / 3) % 4)
+        def season(self):
+            return str(((int(self.published.strftime("%m")) - 1) / 3) % 4)
 
-        def month():
-            return published.strftime("%Y %B")
+        def month(self):
+            return self.published.strftime("%Y %B")
 
-        def year():
-            return str(int(published.strftime("%Y") + 1)) if int(published.strftime("%m")) == 12 else str(int(published.stftime("%Y")))
+        def year(self):
+            return str(int(self.published.strftime("%Y") + 1)) if int(self.published.strftime("%m")) == 12 else str(int(self.published.stftime("%Y")))
 
     class Archive:
         def __init__(self):

@@ -37,7 +37,7 @@ if command == "prepare":
         sys.exit(1)
 
 if command == "version":
-    "v%.1f: %s" % Pyncho.version, Pyncho.tag
+    print "v%.1f: %s" % (Pyncho.version, Pyncho.tag)
     sys.exit(0)
 
 if tasks and command in tasks:
@@ -58,7 +58,7 @@ def main():
         print "post count: %i" % count
 
         if count > 0:
-            latest = blog.posts_by_date.first.nice_date
+            latest = blog.posts_by_date()[-1].nice_date()
             print "last post: %s" % latest
 
         blog.execute_hook("after-info")
@@ -123,18 +123,18 @@ def main():
         blog.execute_hook("after-post")
     elif command == "list":
         pattern = " ".join(sys.argv[2:])
-        for post in blog.posts():
+        for post in blog.posts_by_date():
             if pattern == "" or re.search(pattern, post.title):
-                print "%s, %s" % post.nice_date(), post.title
+                print "%s, %s" % (post.nice_date(), post.title)
     elif command == "rewrite":
         blog.execute_hook("before-rewrite")
         if len(sys.argv) > 2:
             pattern = " ".join(sys.argv[2:])
             post = filter(lambda post: re.search(pattern, post), blog.posts)
         else:
-            post = blog.posts[-1]
+            post = blog.posts_by_date()[-1]
         if post:
-            os.system(editor + " " + post.source.path)
+            os.system(editor + " " + os.path.abspath(post.source))
         else:
             print "Could not find post"
     else: # No/invalid command
