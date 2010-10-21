@@ -1,8 +1,8 @@
 <section id="archive">
 <h2>Archive</h2>
 <ul>
-- posts_by_date foreach(node,
-<li><a href="#{node id}">#{node title}</a></li>
-- )
+#for $node in $posts_by_date
+<li><a href="${node.id}.html">$node.title</a></li>
+#end for
 </ul>
 </section>

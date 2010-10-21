@@ -1,5 +1,5 @@
 <section id="journal">
-- recentPosts foreach(post,
-#{post generate}
-- )
+#for $post in $recent_posts:
+$generate_node($post)
+#end for
 </section>

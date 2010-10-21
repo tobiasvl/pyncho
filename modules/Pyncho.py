@@ -1,5 +1,6 @@
 # vim: set fileencoding=utf-8
 import os, sys, time, datetime
+from Cheetah.Template import Template
 
 def pyncho_id(string):
     return string.replace(" ", "·").lower()
@@ -24,6 +25,7 @@ class Pyncho:
         stylesheet = "pyncho.css"
         output_path = ".pyncho/output"
         node_path = ".pyncho/nodes"
+        layout = os.path.join(".pyncho", "blueprints", "layout.html")
 
         def read_rc_file(self, filename):
             variables = {}
@@ -32,7 +34,7 @@ class Pyncho:
 
         # all posts, unsorted
         def posts(self):
-            return [Pyncho.Post(os.path.join(self.node_path, file))
+            return [Pyncho.Post(os.path.join(self.node_path, file), self)
                 for file in os.listdir(self.node_path)
                 if os.path.splitext(os.path.normcase(file))[1] == ".txt"]
 
@@ -53,32 +55,30 @@ class Pyncho:
             return self.generate("index.html")
 
         def generate_node(self, node):
-            title = node.title + " ·" + self.title
-            return self.generate("node.html")
+            title = node.title + " · " + self.title
+            return self.generate("node.html", [title, node], skip_layout = True)
         
         def generate_archive(self):
-            title = "archives" + "· " + self.title
-            return self.generate("archive.html")
+            title = "archives" + " · " + self.title
+            return self.generate("archive.html", [title])
 
         def generate_seasonal_archive(self):
             title = "seasonal archives" + " · " + self.title
             years = self.posts_by_date()
-            return self.generate("seasonal-archive.html")
+            return self.generate("seasonal-archive.html", [title, years])
 
         def generate_feed(self):
-            return self.generate("feed.rss", True)
+            return self.generate("feed.rss", skip_layout = True)
 
-        def generate(source, skipLayout=False):
-            blueprint = Blueprint(".pyncho/blueprints/" + source)
-            if skipLayout:
-                blueprint = blueprint.through(layout)
-            return blueprint.render(call.sender)
-
-        layout = ".pyncho/blueprints/layout.html"
+        def generate(self, source, variables = [], skip_layout = False):
+            blueprint = Template(file = os.path.join(".pyncho", "blueprints", source), searchList = variables + [self])
+            if not skip_layout:
+                blueprint = Template(file = self.layout, searchList = variables + [self, {'wrapped': str(blueprint)}])
+            return str(blueprint)
 
         # move diz
         def execute_hook(self, hook):
-            hook_file = os.path.join(".pyncho/hooks/" + hook)
+            hook_file = os.path.join(".pyncho", "hooks", hook)
             if os.path.isfile(hook_file):
                 os.system(hook_file)
             return
@@ -86,7 +86,8 @@ class Pyncho:
     class Post:
         source = None
 
-        def __init__(self, path):
+        def __init__(self, path, blog):
+            self.blog = blog
             self.source = path
             self.last_update = os.path.getmtime(path)
             self.meta = os.path.basename(self.source).split(".")
@@ -94,17 +95,20 @@ class Pyncho:
             self.title = self.id.replace("·", " ")
             self.published = datetime.datetime.strptime(self.meta[0], "%Y-%m-%d")
 
-        def as_html(self):
-            return Marxup(read_body()).as_html
+        def as_html(self): #TODO
+            return self.read_body() #str(Template(self.read_body())) #Marxup(read_body()).as_html
 
-        def id(self):
-            return self.id
+        def escape_html(self): #TODO REMOVE
+            return self.read_body()
 
-        def generate():
-            return Blueprint.new(".pyncho/blueprints/post.html").render #TODO
+        def generate(self):
+            return self.blog.generate("post.html", variables = [{'post': self}], skip_layout = True)
 
         def read_body(self):
-            return self.source.contents
+            f = open(self.source, 'r')
+            body = f.read()
+            f.close()
+            return body
 
         def nice_date(self):
             return self.published.strftime("%d. %B %Y")
@@ -118,9 +122,14 @@ class Pyncho:
         def year(self):
             return str(int(self.published.strftime("%Y") + 1)) if int(self.published.strftime("%m")) == 12 else str(int(self.published.stftime("%Y")))
 
+        def atom_date(self):
+            d = self.published.strftime('%Y-%m-%dT%H:%M:%S%z')
+            return d[:-2] + ':' + d[-2:]
+
     class Archive:
-        def __init__(self):
+        def __init__(self, blog):
             self.years = Map() #TODO and what about with
+            self.blog = blog
             return
 
         def append_posts(self, posts):

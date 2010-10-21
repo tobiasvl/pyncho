@@ -3,6 +3,7 @@
 import sys, os, shutil, re, datetime
 sys.path.append("modules")
 from Pyncho import *
+from Cheetah.Template import Template
 
 task_path = os.path.join(".pyncho", "tasks")
 if os.path.isdir(task_path):
@@ -76,14 +77,14 @@ def main():
             pass
 
         print "Generating root node..."
-        root_node = open(blog.output_path + "/index.html", 'w')
-        root_node.write(blog.generate_latest)
+        root_node = open(os.path.join(blog.output_path, "index.html"), 'w')
+        root_node.write(blog.generate_latest())
 
         print "Generating post nodes..."
-        for node in blog.posts:
+        for node in blog.posts():
             print ".",
             node_filename = blog.output_path + "/" + node.id + ".html"
-            if os.isfile(node_filename) or node.last_update > os.getmtime(node_filename):
+            if not os.path.isfile(node_filename) or node.last_update > os.path.getmtime(node_filename):
                 node_file = open(node_filename, 'w')
                 node_file.write(blog.generate_node(node))
                 node_file.close()
@@ -92,7 +93,7 @@ def main():
         print "Generating archive..."
         archive_file = open(blog.output_path + "/archive.html", 'w')
         if blog.archive_style == "seasonal":
-            archive_file.write(blog.generate_seasonal_archive)
+            archive_file.write(blog.generate_seasonal_archive())
             for season, posts in blog.archive.posts_by_season:
                 season_file = open(blog.output_path + "/" + pyncho_id(season) + ".html", 'w')
                 season_file.write(blog.generate_season(season, posts))
@@ -100,12 +101,12 @@ def main():
         #elif blog.archive_style == "daily":
         #elif blog.archive_style == "yearly":
         else: # "flat"
-            archive_file.write(blog.generate_archive)
+            archive_file.write(blog.generate_archive())
         archive_file.close()
 
         print "Generating feed..."
         feed_file = open(blog.output_path + "/feed.rss", 'w')
-        feed_file.write(blog.generate_feed)
+        feed_file.write(blog.generate_feed())
         feed_file.close()
         blog.execute_hook("after-generate")
 
