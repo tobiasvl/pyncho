@@ -23,8 +23,8 @@ class Pyncho:
         base_url = ""
 
         stylesheet = "pyncho.css"
-        output_path = ".pyncho/output"
-        node_path = ".pyncho/nodes"
+        output_path = os.path.join(".pyncho", "output")
+        node_path = os.path.join(".pyncho", "nodes")
         layout = os.path.join(".pyncho", "blueprints", "layout.html")
 
         def read_rc_file(self, filename):

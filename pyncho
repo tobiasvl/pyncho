@@ -83,7 +83,7 @@ def main():
         print "Generating post nodes..."
         for node in blog.posts():
             print ".",
-            node_filename = blog.output_path + "/" + node.id + ".html"
+            node_filename = os.path.join(blog.output_path, node.id + ".html"
             if not os.path.isfile(node_filename) or node.last_update > os.path.getmtime(node_filename):
                 node_file = open(node_filename, 'w')
                 node_file.write(blog.generate_node(node))
@@ -91,11 +91,11 @@ def main():
         print
 
         print "Generating archive..."
-        archive_file = open(blog.output_path + "/archive.html", 'w')
+        archive_file = open(os.path.join(blog.output_path, "archive.html", 'w'))
         if blog.archive_style == "seasonal":
             archive_file.write(blog.generate_seasonal_archive())
             for season, posts in blog.archive.posts_by_season:
-                season_file = open(blog.output_path + "/" + pyncho_id(season) + ".html", 'w')
+                season_file = open(os.path.join(blog.output_path, pyncho_id(season) + ".html", 'w')
                 season_file.write(blog.generate_season(season, posts))
                 season_file.close()
         #elif blog.archive_style == "daily":
@@ -105,7 +105,7 @@ def main():
         archive_file.close()
 
         print "Generating feed..."
-        feed_file = open(blog.output_path + "/feed.rss", 'w')
+        feed_file = open(os.path.join(blog.output_path, "feed.rss", 'w'))
         feed_file.write(blog.generate_feed())
         feed_file.close()
         blog.execute_hook("after-generate")
