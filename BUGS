@@ -1,0 +1,3 @@
+Known bugs:
+
+- There is a bug in Python 2.7 that causes problems with Cheetah (the template enginge). For more information, read here: http://blog.gmane.org/gmane.comp.python.cheetah/month=20101001
