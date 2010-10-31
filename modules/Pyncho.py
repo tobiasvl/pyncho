@@ -59,7 +59,7 @@ class Pyncho:
 
         def generate_node(self, node):
             title = node.title + " · " + self.title
-            return self.generate("node.html", [title, node], skip_layout = True)
+            return self.generate("node.html", [title, node])
         
         def generate_archive(self):
             title = "archives" + " · " + self.title
