@@ -1,20 +1,11 @@
-## WARNING:
-## DO NOT change this file unless you are wearing a pyncho
-
 title = "Manifesto of the Communist Party"
 description = "A spectre is haunting Europe -- the spectre of communism. All the powers of old Europe have entered into a holy alliance to exorcise this spectre: Pope and Tsar, Metternich and Guizot, French Radicals and German police-spies."
 
-name = "Marx in a pyncho"
+name = "Thomas Pynchon"
 email = "marx@pha.hk"
 
-baseUrl = "" # http://0.pha.hk/~bie
+base_url = ""
 
 ## stay away unless you know what's what!
 # stylesheet = "pyncho.css"
-# outputPath = ".pyncho/output"
-
-## Flickr settings
-# Flickr apiKey = ""
-# Flickr cache = true
-
-#Marxup breakAtNewline
+# output_path = ".pyncho/output"
