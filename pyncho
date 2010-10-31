@@ -136,13 +136,13 @@ def main():
             for post in blog.posts_by_date():
                 if pattern == "" or re.search(pattern, post.title):
                     print "%s, %s" % (post.nice_date(), post.title)
-    
+
         def rewrite():
             """Edit a previously posted entry"""
             blog.execute_hook("before-rewrite")
             if len(sys.argv) > 2:
                 pattern = " ".join(sys.argv[2:])
-                post = filter(lambda post: re.search(pattern, post), blog.posts)
+                post = filter(lambda post: re.search(pattern, post), blog.posts())
             else:
                 post = blog.posts_by_date()[-1]
             if post:
