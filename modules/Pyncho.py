@@ -1,6 +1,7 @@
 # vim: set fileencoding=utf-8
 import os, sys, time, datetime
 from Cheetah.Template import Template
+from Marxup import *
 
 def pyncho_id(string):
     return string.replace(" ", "·").lower()
@@ -11,26 +12,28 @@ class Pyncho:
     skeleton = os.path.join(sys.path[0], "skeleton")
     
     class Blog:
-        title = None
-        description = None
-
-        name = None
-        email = None
-
-        # None for monthly or "seasonal"
-        archive_style = None
-
-        base_url = ""
-
-        stylesheet = "pyncho.css"
-        output_path = os.path.join(".pyncho", "output")
-        node_path = os.path.join(".pyncho", "nodes")
-        layout = os.path.join(".pyncho", "blueprints", "layout.html")
+        def __init__(self):
+            self.title = None
+            self.description = None
+    
+            self.name = None
+            self.email = None
+    
+            # None for monthly or "seasonal"
+            self.archive_style = None
+    
+            self.base_url = ""
+    
+            self.stylesheet = "pyncho.css"
+            self.output_path = os.path.join(".pyncho", "output")
+            self.node_path = os.path.join(".pyncho", "nodes")
+            self.layout = os.path.join(".pyncho", "blueprints", "layout.html")
 
         def read_rc_file(self, filename):
+            """Read a settings file and set options accordingly"""
             variables = {}
             execfile(filename, {}, variables)
-            self.__dict__.update(variables)
+            self.__dict__.update(variables) # Update object variables
 
         # all posts, unsorted
         def posts(self):
@@ -42,7 +45,7 @@ class Pyncho:
         def posts_by_date(self):
             return sorted(self.posts(), key=(lambda post: post.published))
 
-        def first_post(self): #TODO Remove?
+        def first_post(self):
             return self.posts_by_date()[0]
 
         def archive(self):
@@ -84,8 +87,7 @@ class Pyncho:
             return
 
     class Post:
-        source = None
-
+        """An individual entry in the blog"""
         def __init__(self, path, blog):
             self.blog = blog
             self.source = path
@@ -95,10 +97,11 @@ class Pyncho:
             self.title = self.id.replace("·", " ")
             self.published = datetime.datetime.strptime(self.meta[0], "%Y-%m-%d")
 
-        def as_html(self): #TODO
-            return self.read_body() #str(Template(self.read_body())) #Marxup(read_body()).as_html
+        def as_html(self): #TODO add Marxup support when finished
+            # return Marxup(self.read_body()).as_html()
+            return self.read_body()
 
-        def escape_html(self): #TODO REMOVE
+        def escape_html(self): #TODO
             return self.read_body()
 
         def generate(self):
@@ -114,6 +117,8 @@ class Pyncho:
             return self.published.strftime("%d. %B %Y")
 
         def season(self):
+            """Return the season the entry was posted"""
+            # In lieu of a Python enum type:
             return str(((int(self.published.strftime("%m")) - 1) / 3) % 4)
 
         def month(self):
@@ -126,19 +131,19 @@ class Pyncho:
             d = self.published.strftime('%Y-%m-%dT%H:%M:%S%z')
             return d[:-2] + ':' + d[-2:]
 
-    class Archive:
-        def __init__(self, blog):
-            self.years = Map() #TODO and what about with
-            self.blog = blog
-            return
-
-        def append_posts(self, posts):
-#            for post in posts:
-#TODO
-            return
-
-        def posts_by_season(self):
-            return #TODO
-
-        def season_name(self, season):
-            return ["winter", "spring", "summer", "autumn"][season]
+#    class Archive:
+#        def __init__(self, blog):
+#            self.years = Map() #TODO and what about with
+#            self.blog = blog
+#            return
+#
+#        def append_posts(self, posts):
+##            for post in posts:
+##TODO
+#            return
+#
+#        def posts_by_season(self):
+#            return #TODO
+#
+#        def season_name(self, season):
+#            return ["winter", "spring", "summer", "autumn"][season]
