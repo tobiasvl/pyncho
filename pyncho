@@ -50,120 +50,120 @@ if tasks and command in tasks:
     sys.exit(0)
 
 def main():
-#    try:
-    blog = Pyncho.Blog()
-    blog.read_rc_file(os.path.join(".pyncho", "rc"))
-
-    def info():
-        """Information about your blog"""
-        blog.execute_hook("before-info")
-        print blog.title; print
-
-        count = len(blog.posts())
-        print "post count: %i" % count
-
-        if count > 0:
-            latest = blog.posts_by_date()[-1].nice_date()
-            print "last post: %s" % latest
-
-        blog.execute_hook("after-info")
-
-    def generate():
-        """Generate HTML files"""
-        blog.execute_hook("before-generate")
-
-        if not blog.posts():
-            print "No posts found"
-            sys.exit(0)
-
-        try:
-            os.mkdir(blog.output_path)
-        except OSError: # Directory existed
-            pass
-
-        print "Generating root node..."
-        root_node = open(os.path.join(blog.output_path, "index.html"), 'w')
-        root_node.write(blog.generate_latest())
-
-        print "Generating post nodes..."
-        for node in blog.posts():
-            print ".",
-            node_filename = os.path.join(blog.output_path, node.id + ".html")
-            if not os.path.isfile(node_filename) or node.last_update > os.path.getmtime(node_filename):
-                node_file = open(node_filename, 'w')
-                node_file.write(blog.generate_node(node))
-                node_file.close()
-        print
-
-        print "Generating archive..."
-        archive_file = open(os.path.join(blog.output_path, "archive.html"), 'w')
-        if blog.archive_style == "seasonal":
-            archive_file.write(blog.generate_seasonal_archive())
-            for season, posts in blog.archive.posts_by_season:
-                season_file = open(os.path.join(blog.output_path, pyncho_id(season) + ".html"), 'w')
-                season_file.write(blog.generate_season(season, posts))
-                season_file.close()
-        #elif blog.archive_style == "daily":  #TODO
-        #elif blog.archive_style == "yearly": #TODO
-        else: # "flat"
-            archive_file.write(blog.generate_archive())
-        archive_file.close()
-
-        print "Generating feed..."
-        feed_file = open(os.path.join(blog.output_path, "feed.rss"), 'w')
-        feed_file.write(blog.generate_feed())
-        feed_file.close()
-        blog.execute_hook("after-generate")
-
-    def post():
-        """Post a new entry to your blog"""
-        blog.execute_hook("before-post")
-        date = datetime.datetime.now().strftime("%Y-%m-%d")
-        if len(sys.argv) > 2:
-            title = " ".join(sys.argv[2:])
-        else:
-            title = "Untitled"
-        id = pyncho_id(title)
-        path = os.path.join(blog.node_path, date + "." + id + ".txt")
-        if not os.path.exists(blog.node_path):
-            os.mkdir(blog.node_path)
-        os.system(editor + " " + path)
-        blog.execute_hook("after-post")
-
-    def list():
-        """Print a list of all entries"""
-        pattern = " ".join(sys.argv[2:])
-        for post in blog.posts_by_date():
-            if pattern == "" or re.search(pattern, post.title):
-                print "%s, %s" % (post.nice_date(), post.title)
-
-    def rewrite():
-        """Edit a previously posted entry"""
-        blog.execute_hook("before-rewrite")
-        if len(sys.argv) > 2:
+    try:
+        blog = Pyncho.Blog()
+        blog.read_rc_file(os.path.join(".pyncho", "rc"))
+    
+        def info():
+            """Information about your blog"""
+            blog.execute_hook("before-info")
+            print blog.title; print
+    
+            count = len(blog.posts())
+            print "post count: %i" % count
+    
+            if count > 0:
+                latest = blog.posts_by_date()[-1].nice_date()
+                print "last post: %s" % latest
+    
+            blog.execute_hook("after-info")
+    
+        def generate():
+            """Generate HTML files"""
+            blog.execute_hook("before-generate")
+    
+            if not blog.posts():
+                print "No posts found"
+                sys.exit(0)
+    
+            try:
+                os.mkdir(blog.output_path)
+            except OSError: # Directory existed
+                pass
+    
+            print "Generating root node..."
+            root_node = open(os.path.join(blog.output_path, "index.html"), 'w')
+            root_node.write(blog.generate_latest())
+    
+            print "Generating post nodes..."
+            for node in blog.posts():
+                print ".",
+                node_filename = os.path.join(blog.output_path, node.id + ".html")
+                if not os.path.isfile(node_filename) or node.last_update > os.path.getmtime(node_filename):
+                    node_file = open(node_filename, 'w')
+                    node_file.write(blog.generate_node(node))
+                    node_file.close()
+            print
+    
+            print "Generating archive..."
+            archive_file = open(os.path.join(blog.output_path, "archive.html"), 'w')
+            if blog.archive_style == "seasonal":
+                archive_file.write(blog.generate_seasonal_archive())
+                for season, posts in blog.archive.posts_by_season:
+                    season_file = open(os.path.join(blog.output_path, pyncho_id(season) + ".html"), 'w')
+                    season_file.write(blog.generate_season(season, posts))
+                    season_file.close()
+            #elif blog.archive_style == "daily":  #TODO
+            #elif blog.archive_style == "yearly": #TODO
+            else: # "flat"
+                archive_file.write(blog.generate_archive())
+            archive_file.close()
+    
+            print "Generating feed..."
+            feed_file = open(os.path.join(blog.output_path, "feed.rss"), 'w')
+            feed_file.write(blog.generate_feed())
+            feed_file.close()
+            blog.execute_hook("after-generate")
+    
+        def post():
+            """Post a new entry to your blog"""
+            blog.execute_hook("before-post")
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            if len(sys.argv) > 2:
+                title = " ".join(sys.argv[2:])
+            else:
+                title = "Untitled"
+            id = pyncho_id(title)
+            path = os.path.join(blog.node_path, date + "." + id + ".txt")
+            if not os.path.exists(blog.node_path):
+                os.mkdir(blog.node_path)
+            os.system(editor + " " + path)
+            blog.execute_hook("after-post")
+    
+        def list():
+            """Print a list of all entries"""
             pattern = " ".join(sys.argv[2:])
-            posts = filter(lambda post: re.search(pattern, post.title), blog.posts())
-            if posts:
-                post = posts[0]
+            for post in blog.posts_by_date():
+                if pattern == "" or re.search(pattern, post.title):
+                    print "%s, %s" % (post.nice_date(), post.title)
+    
+        def rewrite():
+            """Edit a previously posted entry"""
+            blog.execute_hook("before-rewrite")
+            if len(sys.argv) > 2:
+                pattern = " ".join(sys.argv[2:])
+                posts = filter(lambda post: re.search(pattern, post.title), blog.posts())
+                if posts:
+                    post = posts[0]
+                else:
+                    post = blog.posts_by_date()[-1]
             else:
                 post = blog.posts_by_date()[-1]
-        else:
-            post = blog.posts_by_date()[-1]
-        if post:
-            os.system(editor + " " + os.path.abspath(post.source))
-        else:
-            print "Could not find post"
-
-    try:
-        # Instead of switch/case (which Python lacks) or lots of if/elif:
-        locals()[command]() # Execute command
-    except KeyError: 
-        # No/invalid command
-        usage()
+            if post:
+                os.system(editor + " " + os.path.abspath(post.source))
+            else:
+                print "Could not find post"
     
-#    except Exception, e:
-#        print e
-#        print "have you done 'pyncho prepare' yet????"
-#        sys.exit(1)
+        try:
+            # Instead of switch/case (which Python lacks) or lots of if/elif:
+            locals()[command]() # Execute command
+        except KeyError: 
+            # No/invalid command
+            usage()
+    
+    except Exception, e:
+        print e
+        print "have you done 'pyncho prepare' yet????"
+        sys.exit(1)
 
 main() # Let's get this party started

@@ -57,9 +57,9 @@ class Pyncho:
         def generate_latest(self):
             return self.generate("index.html")
 
-        def generate_node(self, node):
+        def generate_node(self, node, skip_layout = False):
             title = node.title + " · " + self.title
-            return self.generate("node.html", [title, node])
+            return self.generate("node.html", [title, node], skip_layout)
         
         def generate_archive(self):
             title = "archives" + " · " + self.title
