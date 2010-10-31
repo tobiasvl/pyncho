@@ -142,7 +142,7 @@ def main():
             blog.execute_hook("before-rewrite")
             if len(sys.argv) > 2:
                 pattern = " ".join(sys.argv[2:])
-                post = filter(lambda post: re.search(pattern, post), blog.posts())
+                post = filter(lambda post: re.search(pattern, post), blog.posts().iteritems())
             else:
                 post = blog.posts_by_date()[-1]
             if post:
