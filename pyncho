@@ -50,8 +50,7 @@ if tasks and command in tasks:
     sys.exit(0)
 
 def main():
-    def main2():
-#    try:
+    try:
         blog = Pyncho.Blog()
         blog.read_rc_file(os.path.join(".pyncho", "rc"))
     
@@ -161,11 +160,10 @@ def main():
         except KeyError: 
             # No/invalid command
             usage()
-    main2()
     
-#    except Exception, e:
-#        print e
-#        print "have you done 'pyncho prepare' yet????"
-#        sys.exit(1)
+    except Exception, e:
+        print e
+        print "have you done 'pyncho prepare' yet????"
+        sys.exit(1)
 
 main() # Let's get this party started
