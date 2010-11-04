@@ -37,6 +37,8 @@ class Pyncho:
 
         # all posts, unsorted
         def posts(self):
+            if not os.path.exists(self.node_path):
+                return []
             return [Pyncho.Post(os.path.join(self.node_path, file), self)
                 for file in os.listdir(self.node_path)
                 if os.path.splitext(os.path.normcase(file))[1] == ".txt"]
