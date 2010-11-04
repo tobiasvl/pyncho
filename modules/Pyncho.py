@@ -97,9 +97,8 @@ class Pyncho:
             self.title = self.id.replace("·", " ")
             self.published = datetime.datetime.strptime(self.meta[0], "%Y-%m-%d")
 
-        def as_html(self): #TODO add Marxup support when finished
+        def as_html(self):
             return Marxup(self.read_body()).as_html()
-            #return self.read_body()
 
         def escape_html(self): #TODO
             return self.read_body()
