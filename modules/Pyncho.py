@@ -50,6 +50,9 @@ class Pyncho:
         def first_post(self):
             return self.posts_by_date()[0]
 
+        def latest_post(self):
+            return self.posts_by_date()[-1]
+
         def archive(self):
             return Pyncho.Archive(self.posts())
 

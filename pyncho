@@ -63,7 +63,7 @@ def main():
             print "post count: %i" % count
     
             if count > 0:
-                latest = blog.posts_by_date()[-1].nice_date()
+                latest = blog.latest_post().nice_date()
                 print "last post: %s" % latest
     
             blog.execute_hook("after-info")
@@ -119,14 +119,17 @@ def main():
             """Post a new entry to your blog"""
             blog.execute_hook("before-post")
             date = datetime.datetime.now().strftime("%Y-%m-%d")
+
             if len(sys.argv) > 2:
                 title = " ".join(sys.argv[2:])
             else:
                 title = "Untitled"
+
             id = pyncho_id(title)
-            path = os.path.join(blog.node_path, date + "." + id + ".txt")
             if not os.path.exists(blog.node_path):
                 os.mkdir(blog.node_path)
+            path = os.path.join(blog.node_path, "%s.%s.txt" % (date, id))
+
             os.system(editor + " " + path)
             blog.execute_hook("after-post")
     
@@ -146,9 +149,9 @@ def main():
                 if posts:
                     post = posts[0]
                 else:
-                    post = blog.posts_by_date()[-1]
+                    post = blog.latest_post()
             else:
-                post = blog.posts_by_date()[-1]
+                post = blog.latest_post()
             if post:
                 os.system(editor + " " + os.path.abspath(post.source))
             else:
@@ -166,4 +169,5 @@ def main():
         print "have you done 'pyncho prepare' yet????"
         sys.exit(1)
 
-main() # Let's get this party started
+if __name__ == '__main__': 
+    main() # Let's get this party started
