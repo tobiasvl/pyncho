@@ -1,1 +1,18 @@
-Pyncho depends on the Cheetah template engine: http://cheetahtemplate.org
+Prerequisites
+-------------
+
+pyncho depends on the Cheetah template engine: http://cheetahtemplate.org
+
+Installation
+------------
+
+To set up your blog and your .pyncho/rc file:
+
+  pyncho prepare
+
+Configuration
+-------------
+
+If you don't change output_path in .pyncho/rc the finished HTML will be put
+in .pyncho/output. Also make sure you set `baseurl` to something clever,
+because the Atom feed wants an absolute URL.
