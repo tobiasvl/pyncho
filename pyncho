@@ -84,6 +84,7 @@ def main():
             print "Generating root node..."
             root_node = open(os.path.join(blog.output_path, "index.html"), 'w')
             root_node.write(blog.generate_latest())
+            root_node.close()
     
             print "Generating post nodes..."
             for node in blog.posts():
@@ -159,7 +160,8 @@ def main():
     
         try:
             # Instead of switch/case (which Python lacks) or lots of if/elif:
-            locals()[command]() # Execute command
+            #locals()[command]() # Execute command
+            eval(command + '()') # Execute command
         except KeyError: 
             # No/invalid command
             usage()
