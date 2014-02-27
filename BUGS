@@ -1,3 +1,11 @@
-Known bugs:
+Known bugs
+----------
 
-- There is a bug in Python 2.7 that causes problems with Cheetah (the template enginge). For more information, read here: http://blog.gmane.org/gmane.comp.python.cheetah/month=20101001
+- NOTE: This might have been fixed in Cheetah 2.4.4 but there's no changelog
+  for that version so who knows. Will test properly some day but generating
+  HTML seems to work in Python 2.7 and Cheetah 2.4.4 npw.
+
+  There is a bug in Python 2.7 that causes problems with Cheetah (the template
+  enginge). For more information, read here:
+
+    http://blog.gmane.org/gmane.comp.python.cheetah/month=20101001
