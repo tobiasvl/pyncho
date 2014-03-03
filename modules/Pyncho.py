@@ -1,7 +1,7 @@
 # vim: set fileencoding=utf-8
 import os, sys, time, datetime
 from Cheetah.Template import Template
-from Marxup import *
+from marxup.marxup import Marxup
 
 def pyncho_id(string):
     return string.replace(" ", "·").lower()

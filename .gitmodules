@@ -1,0 +1,3 @@
+[submodule "marxup"]
+	path = marxup
+	url = git://github.com/tobiasvl/marxup.git
