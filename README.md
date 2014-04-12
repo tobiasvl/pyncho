@@ -9,6 +9,8 @@ Also contains a port of the markup language marxup: http://pha.hk/wiki/marxup
 (either of version 1.5 or 0.6.5 depending on who you ask, marxup is more
 fragmented than Android)
 
+Demo blog: http://tobiasvl.github.io/pyncho/
+
 Usage
 -----
 
