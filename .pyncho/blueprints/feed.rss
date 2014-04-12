@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>$title</title>
+    <description>$description</description>
+    <link>$base_url</link>
+    #for $post in $recent_posts:
+    <item>
+      <title>$post.title</title>
+      <link>${base_url}/$post.id</link>
+      <guid isPermaLink="true">${base_url}/$post.id</guid>
+      <pubDate>$post.atom_date</lastPubDate>
+      <description>$post.as_html#*.escape_html*#</description>
+    #end for
+  </channel>
+</rss>

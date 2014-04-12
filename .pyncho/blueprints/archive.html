@@ -1,0 +1,8 @@
+<section id="archive">
+<h2>Archive</h2>
+<ul>
+#for $node in $posts_by_date
+<li><a href="${node.id}.html">$node.title</a></li>
+#end for
+</ul>
+</section>
