@@ -9,8 +9,9 @@
       <title>$post.title</title>
       <link>${base_url}/$post.id</link>
       <guid isPermaLink="true">${base_url}/$post.id</guid>
-      <pubDate>$post.atom_date</lastPubDate>
+      <pubDate>$post.atom_date</pubDate>
       <description>$post.as_html#*.escape_html*#</description>
+    </item>
     #end for
   </channel>
 </rss>
